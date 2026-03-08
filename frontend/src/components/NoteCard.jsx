@@ -65,9 +65,9 @@ export default function NoteCard({ note, onGenerateDoc }) {
       {!collapsed && (
         <div className="px-4 py-3">
           {showRaw ? (
-            <pre className="text-xs text-gray-400 whitespace-pre-wrap font-mono">{note.rawContent}</pre>
+            <pre className="text-xs text-gray-400 whitespace-pre-wrap font-mono max-h-64 overflow-y-auto">{note.rawContent}</pre>
           ) : (
-            <div className="prose prose-invert prose-sm max-w-none prose-p:my-1 prose-li:my-0">
+            <div className="prose prose-invert prose-sm max-w-none prose-p:my-1 prose-li:my-0 max-h-96 overflow-y-auto">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {note.structuredContent}
               </ReactMarkdown>
