@@ -24,6 +24,7 @@ export default function NotebookPage() {
   const [newestFirst, setNewestFirst] = useState(true);
   const [docsKey, setDocsKey] = useState(0);
   const [search, setSearch] = useState('');
+  const [activeTag, setActiveTag] = useState(null);
 
   useEffect(() => { load(); }, [id]);
 
@@ -54,12 +55,15 @@ export default function NotebookPage() {
   }
 
   const sortedNotes = newestFirst ? notes : [...notes].reverse();
-  const filteredNotes = search.trim()
-    ? sortedNotes.filter(n => {
-        const q = search.toLowerCase();
-        return n.noteContext?.toLowerCase().includes(q) || n.structuredContent?.toLowerCase().includes(q);
-      })
-    : sortedNotes;
+  const filteredNotes = sortedNotes.filter(n => {
+    const matchesSearch = !search.trim() ||
+      n.noteContext?.toLowerCase().includes(search.toLowerCase()) ||
+      n.structuredContent?.toLowerCase().includes(search.toLowerCase());
+    const matchesTag = !activeTag || n.meta?.tags?.includes(activeTag);
+    return matchesSearch && matchesTag;
+  });
+
+  const allTags = [...new Set(notes.flatMap(n => n.meta?.tags || []))].sort();
 
   if (loading) return <div className="py-16"><Spinner size="lg" /></div>;
   if (!notebook) return <div className="text-center py-16 text-red-400">Notebook not found</div>;
@@ -120,7 +124,7 @@ export default function NotebookPage() {
       {tab === 'timeline' && (
         <div>
           <NoteForm notebookId={id} onNoteAdded={handleNoteAdded} />
-          <div className="flex items-center gap-3 mt-6 mb-3">
+          <div className="flex items-center gap-3 mt-6 mb-2">
             <input
               type="search"
               value={search}
@@ -138,12 +142,29 @@ export default function NotebookPage() {
               {newestFirst ? t('notebook.newestFirst') : t('notebook.oldestFirst')}
             </button>
           </div>
+          {allTags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              {allTags.map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                  className={`text-xs px-2 py-0.5 rounded-full transition-colors ${
+                    activeTag === tag
+                      ? 'bg-indigo-700 text-indigo-100'
+                      : 'bg-gray-800 text-gray-500 hover:text-gray-300'
+                  }`}
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
+          )}
           {notes.length === 0 ? (
             <p className="text-center py-8 text-gray-600">{t('notebook.noNotes')}</p>
           ) : filteredNotes.length === 0 ? (
             <p className="text-center py-8 text-gray-600">{t('notebook.noResults')}</p>
           ) : (
-            <Timeline notes={filteredNotes} onGenerateDoc={handleGenerateDoc} searchQuery={search} onNoteUpdated={handleNoteUpdated} />
+            <Timeline notes={filteredNotes} onGenerateDoc={handleGenerateDoc} searchQuery={search} onNoteUpdated={handleNoteUpdated} onTagClick={tag => setActiveTag(activeTag === tag ? null : tag)} activeTag={activeTag} />
           )}
         </div>
       )}

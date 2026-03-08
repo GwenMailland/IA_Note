@@ -37,7 +37,7 @@ function highlightMarkdown(content, query) {
   );
 }
 
-export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNoteUpdated }) {
+export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNoteUpdated, onTagClick, activeTag }) {
   const { t, lang } = useTranslation();
   const [showRaw, setShowRaw] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -101,6 +101,25 @@ export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNote
           {note.provider} · {note.model?.split(':')[0] || note.model}
         </span>
       </div>
+
+      {/* Tags */}
+      {!collapsed && note.meta?.tags?.length > 0 && (
+        <div className="px-4 py-1.5 flex flex-wrap gap-1 border-b border-gray-800/50">
+          {note.meta.tags.map(tag => (
+            <button
+              key={tag}
+              onClick={() => onTagClick?.(tag)}
+              className={`text-xs px-2 py-0.5 rounded-full transition-colors ${
+                activeTag === tag
+                  ? 'bg-indigo-700 text-indigo-100'
+                  : 'bg-gray-800 text-gray-400 hover:bg-indigo-900 hover:text-indigo-300'
+              }`}
+            >
+              #{tag}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Suggestion banner */}
       {!collapsed && note.meta?.suggest_document && (

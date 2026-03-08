@@ -15,10 +15,16 @@ function parseAIResponse(rawContent) {
 
   let meta = {};
   try {
-    // Extract JSON from possible surrounding text
-    const jsonMatch = metaStr.match(/\{[^}]*\}/);
-    if (jsonMatch) {
-      meta = JSON.parse(jsonMatch[0]);
+    // Try direct parse first, then extract JSON block
+    const trimmed = metaStr.trim();
+    if (trimmed.startsWith('{')) {
+      meta = JSON.parse(trimmed);
+    } else {
+      const start = metaStr.indexOf('{');
+      const end = metaStr.lastIndexOf('}');
+      if (start !== -1 && end !== -1) {
+        meta = JSON.parse(metaStr.slice(start, end + 1));
+      }
     }
   } catch {
     meta = {};
