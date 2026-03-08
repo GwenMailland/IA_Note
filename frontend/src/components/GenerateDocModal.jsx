@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
+import { ssePost } from '../hooks/useSSEPost';
+import ProgressBar from './ProgressBar';
 
 export default function GenerateDocModal({ notebookId, note, onGenerated, onClose }) {
   const { t, lang } = useTranslation();
@@ -7,26 +9,23 @@ export default function GenerateDocModal({ notebookId, note, onGenerated, onClos
   const [instructions, setInstructions] = useState('');
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
+  const [progress, setProgress] = useState(null);
 
   async function handleGenerate() {
     if (!title.trim()) { setError(t('noteForm.required')); return; }
     setGenerating(true);
     setError('');
+    setProgress({ value: 0, label: '…' });
     try {
-      const r = await fetch(`http://localhost:3001/api/notebooks/${notebookId}/documents/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: title.trim(),
-          instructions: instructions.trim(),
-          noteId: note?.id,
-          language: lang
-        })
-      });
-      if (!r.ok) throw new Error('Failed');
+      await ssePost(
+        `http://localhost:3001/api/notebooks/${notebookId}/documents/generate/stream`,
+        { title: title.trim(), instructions: instructions.trim(), noteId: note?.id, language: lang },
+        ({ progress: value, label }) => setProgress({ value, label })
+      );
       onGenerated();
     } catch (e) {
       setError(t('errors.aiFailed'));
+      setProgress(null);
     } finally {
       setGenerating(false);
     }
@@ -46,6 +45,7 @@ export default function GenerateDocModal({ notebookId, note, onGenerated, onClos
             placeholder={t('modal.docTitlePlaceholder')}
             className="input w-full"
             autoFocus
+            disabled={generating}
           />
           {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
         </div>
@@ -58,6 +58,7 @@ export default function GenerateDocModal({ notebookId, note, onGenerated, onClos
             placeholder={t('modal.docInstructionsPlaceholder')}
             rows={4}
             className="input w-full resize-none text-sm"
+            disabled={generating}
           />
         </div>
 
@@ -67,8 +68,14 @@ export default function GenerateDocModal({ notebookId, note, onGenerated, onClos
           </p>
         )}
 
+        {progress !== null && (
+          <div className="mb-4">
+            <ProgressBar progress={progress.value} label={progress.label} />
+          </div>
+        )}
+
         <div className="flex gap-2 justify-end">
-          <button onClick={onClose} className="btn btn-secondary">{t('modal.cancel')}</button>
+          <button onClick={onClose} disabled={generating} className="btn btn-secondary">{t('modal.cancel')}</button>
           <button
             onClick={handleGenerate}
             disabled={generating}

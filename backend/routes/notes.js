@@ -24,6 +24,78 @@ function queueReadmeUpdate(notebookId, note, language) {
   readmeQueues.set(notebookId, next);
 }
 
+function buildNotePrompt(globalContext, noteContext, rawContent, language) {
+  if (language === 'fr') {
+    return `Tu es un assistant de prise de notes professionnelles.\n\nContexte global du bloc-note : ${globalContext}\nType de note : ${noteContext}\nContenu brut :\n${rawContent}\n\nTa réponse doit comporter DEUX parties dans cet ordre exact :\n\nPARTIE 1 — Note structurée en Markdown (commence directement par le contenu) :\n- Reformule et structure en Markdown propre\n- Conserve TOUTES les informations\n- Ajoute titres, listes si pertinent\n- Corrige orthographe et grammaire\n- Identifie décisions, TODO, questions ouvertes\n\n---AI_META---\n{"suggest_document": true ou false, "document_title": "titre si pertinent sinon null", "document_reason": "raison sinon null", "tags": ["tag1", "tag2"]}`;
+  }
+  return `You are a professional note-taking assistant.\n\nNotebook context: ${globalContext}\nNote type: ${noteContext}\nRaw content:\n${rawContent}\n\nYour response MUST have TWO parts in this exact order:\n\nPART 1 — Structured Markdown note (start directly with the content):\n- Reformat and structure in clean Markdown\n- Keep ALL information\n- Add titles, lists where relevant\n- Fix spelling and grammar\n- Identify decisions, TODOs, open questions\n\n---AI_META---\n{"suggest_document": true or false, "document_title": "title if relevant else null", "document_reason": "reason else null", "tags": ["tag1", "tag2"]}`;
+}
+
+// POST /api/notebooks/:notebookId/notes/stream  (SSE — real progress)
+router.post('/stream', async (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
+  function send(data) {
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  }
+
+  try {
+    const { notebookId } = req.params;
+    const { noteContext, rawContent, language = 'fr', provider } = req.body;
+
+    if (!noteContext || !rawContent) {
+      send({ error: language === 'fr' ? 'Champs manquants' : 'Missing fields' });
+      return res.end();
+    }
+
+    send({ step: 'preparing', progress: 10, label: language === 'fr' ? 'Préparation…' : 'Preparing…' });
+
+    const notebook = storage.getNotebook(notebookId);
+    if (!notebook) {
+      send({ error: 'Notebook not found' });
+      return res.end();
+    }
+
+    send({ step: 'context', progress: 25, label: language === 'fr' ? 'Contexte chargé' : 'Context loaded' });
+
+    const prompt = buildNotePrompt(notebook.context || '', noteContext, rawContent, language);
+
+    send({ step: 'ai_call', progress: 35, label: language === 'fr' ? 'Appel IA…' : 'Calling AI…' });
+
+    const aiResult = await aiRouter.callAI(prompt, '', { provider });
+
+    send({ step: 'parsing', progress: 82, label: language === 'fr' ? 'Analyse de la réponse…' : 'Parsing response…' });
+
+    const { structured, meta } = parseAIResponse(aiResult.content);
+
+    const note = {
+      id: uuidv4(),
+      notebookId,
+      noteContext,
+      rawContent,
+      structuredContent: structured,
+      meta,
+      provider: aiResult.provider,
+      model: aiResult.model,
+      language,
+      createdAt: new Date().toISOString()
+    };
+
+    send({ step: 'saving', progress: 92, label: language === 'fr' ? 'Sauvegarde…' : 'Saving…' });
+
+    storage.addNote(notebookId, note);
+    queueReadmeUpdate(notebookId, note, language);
+
+    send({ step: 'done', progress: 100, result: note });
+    res.end();
+  } catch (err) {
+    res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+    res.end();
+  }
+});
+
 // POST /api/notebooks/:notebookId/notes
 router.post('/', async (req, res) => {
   try {
@@ -37,15 +109,7 @@ router.post('/', async (req, res) => {
     const notebook = storage.getNotebook(notebookId);
     if (!notebook) return res.status(404).json({ error: 'Notebook not found' });
 
-    const globalContext = notebook.context || '';
-
-    let prompt;
-    if (language === 'fr') {
-      prompt = `Tu es un assistant de prise de notes professionnelles.\n\nContexte global du bloc-note : ${globalContext}\nType de note : ${noteContext}\nContenu brut :\n${rawContent}\n\nTa réponse doit comporter DEUX parties dans cet ordre exact :\n\nPARTIE 1 — Note structurée en Markdown (commence directement par le contenu) :\n- Reformule et structure en Markdown propre\n- Conserve TOUTES les informations\n- Ajoute titres, listes si pertinent\n- Corrige orthographe et grammaire\n- Identifie décisions, TODO, questions ouvertes\n\n---AI_META---\n{"suggest_document": true ou false, "document_title": "titre si pertinent sinon null", "document_reason": "raison sinon null", "tags": ["tag1", "tag2"]}`;
-    } else {
-      prompt = `You are a professional note-taking assistant.\n\nNotebook context: ${globalContext}\nNote type: ${noteContext}\nRaw content:\n${rawContent}\n\nYour response MUST have TWO parts in this exact order:\n\nPART 1 — Structured Markdown note (start directly with the content):\n- Reformat and structure in clean Markdown\n- Keep ALL information\n- Add titles, lists where relevant\n- Fix spelling and grammar\n- Identify decisions, TODOs, open questions\n\n---AI_META---\n{"suggest_document": true or false, "document_title": "title if relevant else null", "document_reason": "reason else null", "tags": ["tag1", "tag2"]}`;
-    }
-
+    const prompt = buildNotePrompt(notebook.context || '', noteContext, rawContent, language);
     const aiResult = await aiRouter.callAI(prompt, '', { provider });
     const { structured, meta } = parseAIResponse(aiResult.content);
 
@@ -63,8 +127,6 @@ router.post('/', async (req, res) => {
     };
 
     storage.addNote(notebookId, note);
-
-    // Update README incrementally (queued to prevent concurrent overwrites)
     queueReadmeUpdate(notebookId, note, language);
 
     res.status(201).json(note);

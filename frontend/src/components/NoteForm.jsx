@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useTranslation } from '../hooks/useTranslation';
+import { ssePost } from '../hooks/useSSEPost';
+import ProgressBar from './ProgressBar';
 
 const PROVIDERS = ['ollama', 'groq', 'claude'];
 
@@ -14,6 +16,7 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
   const [errors, setErrors] = useState({});
   const [providerStatus, setProviderStatus] = useState({ ollama: false, groq: false, claude: false });
   const [preview, setPreview] = useState(false);
+  const [progress, setProgress] = useState(null); // null = hidden, {value, label}
 
   useEffect(() => {
     Promise.all([
@@ -38,19 +41,13 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
     setSubmitting(true);
     setErrors({});
     setPreview(false);
+    setProgress({ value: 0, label: '…' });
     try {
-      const r = await fetch(`http://localhost:3001/api/notebooks/${notebookId}/notes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          noteContext: noteContext.trim(),
-          rawContent: rawContent.trim(),
-          language: lang,
-          provider: provider || undefined
-        })
-      });
-      if (!r.ok) throw new Error('Failed');
-      const note = await r.json();
+      const note = await ssePost(
+        `http://localhost:3001/api/notebooks/${notebookId}/notes/stream`,
+        { noteContext: noteContext.trim(), rawContent: rawContent.trim(), language: lang, provider: provider || undefined },
+        ({ progress: value, label }) => setProgress({ value, label })
+      );
       onNoteAdded(note);
       setNoteContext('');
       setRawContent('');
@@ -59,6 +56,7 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
       setErrors({ submit: t('errors.aiFailed') });
     } finally {
       setSubmitting(false);
+      setTimeout(() => setProgress(null), 800);
     }
   }
 
@@ -137,6 +135,9 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
 
       {errors.submit && (
         <p className="text-red-400 text-xs mt-2">{errors.submit}</p>
+      )}
+      {progress !== null && (
+        <ProgressBar progress={progress.value} label={progress.label} />
       )}
     </form>
   );
