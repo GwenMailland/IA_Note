@@ -24,7 +24,9 @@
     "editContext": "Modifier le contexte",
     "noNotes": "Aucune note. Ajoutez votre première note !",
     "newestFirst": "Plus récent en haut",
-    "oldestFirst": "Plus ancien en haut"
+    "oldestFirst": "Plus ancien en haut",
+    "search": "Rechercher dans les notes…",
+    "noResults": "Aucune note ne correspond à cette recherche."
   },
   "noteForm": {
     "title": "Ajouter une note",

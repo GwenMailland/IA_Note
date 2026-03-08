@@ -1,7 +1,7 @@
 import React from 'react';
 import NoteCard from './NoteCard';
 
-export default function Timeline({ notes, onGenerateDoc }) {
+export default function Timeline({ notes, onGenerateDoc, searchQuery = '' }) {
   return (
     <div className="relative">
       {/* Vertical line */}
@@ -14,7 +14,7 @@ export default function Timeline({ notes, onGenerateDoc }) {
             <div className="absolute left-3.5 top-5 w-1.5 h-1.5 rounded-full bg-indigo-500 ring-2 ring-gray-950" />
             {/* Connector horizontal line */}
             <div className="absolute left-5 top-[1.4rem] h-0.5 w-5 bg-gray-800" />
-            <NoteCard note={note} onGenerateDoc={onGenerateDoc} />
+            <NoteCard note={note} onGenerateDoc={onGenerateDoc} searchQuery={searchQuery} />
           </div>
         ))}
       </div>

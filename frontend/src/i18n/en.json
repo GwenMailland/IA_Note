@@ -24,7 +24,9 @@
     "editContext": "Edit context",
     "noNotes": "No notes yet. Add your first note!",
     "newestFirst": "Newest first",
-    "oldestFirst": "Oldest first"
+    "oldestFirst": "Oldest first",
+    "search": "Search notes…",
+    "noResults": "No notes match your search."
   },
   "noteForm": {
     "title": "Add a note",

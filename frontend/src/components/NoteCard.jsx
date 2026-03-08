@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { useTranslation } from '../hooks/useTranslation';
 
 function formatDateTime(iso, lang) {
@@ -10,7 +11,33 @@ function formatDateTime(iso, lang) {
   });
 }
 
-export default function NoteCard({ note, onGenerateDoc }) {
+// Highlight plain text occurrences with <mark> spans
+function Highlight({ text, query }) {
+  if (!query.trim() || !text) return <>{text}</>;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase()
+          ? <mark key={i} className="bg-yellow-400/30 text-yellow-200 rounded px-0.5">{part}</mark>
+          : part
+      )}
+    </>
+  );
+}
+
+// Inject <mark> tags into a markdown string for rendering via rehype-raw
+function highlightMarkdown(content, query) {
+  if (!query.trim() || !content) return content;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return content.replace(
+    new RegExp(`(${escaped})`, 'gi'),
+    '<mark class="bg-yellow-400/30 text-yellow-200 rounded px-0.5">$1</mark>'
+  );
+}
+
+export default function NoteCard({ note, onGenerateDoc, searchQuery = '' }) {
   const { t, lang } = useTranslation();
   const [showRaw, setShowRaw] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -21,6 +48,10 @@ export default function NoteCard({ note, onGenerateDoc }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
+
+  const processedContent = searchQuery
+    ? highlightMarkdown(note.structuredContent, searchQuery)
+    : note.structuredContent;
 
   return (
     <div className="card overflow-hidden">
@@ -35,7 +66,9 @@ export default function NoteCard({ note, onGenerateDoc }) {
           </button>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="badge badge-indigo">{note.noteContext}</span>
+              <span className="badge badge-indigo">
+                <Highlight text={note.noteContext} query={searchQuery} />
+              </span>
               <span className="text-xs text-gray-600">{formatDateTime(note.createdAt, lang)}</span>
             </div>
           </div>
@@ -65,11 +98,13 @@ export default function NoteCard({ note, onGenerateDoc }) {
       {!collapsed && (
         <div className="px-4 py-3">
           {showRaw ? (
-            <pre className="text-xs text-gray-400 whitespace-pre-wrap font-mono max-h-64 overflow-y-auto">{note.rawContent}</pre>
+            <pre className="text-xs text-gray-400 whitespace-pre-wrap font-mono max-h-64 overflow-y-auto">
+              <Highlight text={note.rawContent} query={searchQuery} />
+            </pre>
           ) : (
             <div className="prose prose-invert prose-sm max-w-none prose-p:my-1 prose-li:my-0 max-h-96 overflow-y-auto">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {note.structuredContent}
+              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={searchQuery ? [rehypeRaw] : []}>
+                {processedContent}
               </ReactMarkdown>
             </div>
           )}

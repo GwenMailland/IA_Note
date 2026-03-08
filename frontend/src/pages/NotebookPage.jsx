@@ -23,6 +23,7 @@ export default function NotebookPage() {
   const [generateDocNote, setGenerateDocNote] = useState(null);
   const [newestFirst, setNewestFirst] = useState(true);
   const [docsKey, setDocsKey] = useState(0);
+  const [search, setSearch] = useState('');
 
   useEffect(() => { load(); }, [id]);
 
@@ -49,6 +50,12 @@ export default function NotebookPage() {
   }
 
   const sortedNotes = newestFirst ? notes : [...notes].reverse();
+  const filteredNotes = search.trim()
+    ? sortedNotes.filter(n => {
+        const q = search.toLowerCase();
+        return n.noteContext?.toLowerCase().includes(q) || n.structuredContent?.toLowerCase().includes(q);
+      })
+    : sortedNotes;
 
   if (loading) return <div className="py-16"><Spinner size="lg" /></div>;
   if (!notebook) return <div className="text-center py-16 text-red-400">Notebook not found</div>;
@@ -109,21 +116,30 @@ export default function NotebookPage() {
       {tab === 'timeline' && (
         <div>
           <NoteForm notebookId={id} onNoteAdded={handleNoteAdded} />
-          <div className="flex items-center justify-between mt-6 mb-3">
-            <h2 className="text-sm font-medium text-gray-400">
-              {notes.length} {notes.length === 1 ? t('home.note') : t('home.notes')}
-            </h2>
+          <div className="flex items-center gap-3 mt-6 mb-3">
+            <input
+              type="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder={t('notebook.search')}
+              className="input text-sm py-1.5 flex-1"
+            />
+            <span className="text-sm text-gray-500 shrink-0">
+              {filteredNotes.length} {filteredNotes.length === 1 ? t('home.note') : t('home.notes')}
+            </span>
             <button
               onClick={() => setNewestFirst(v => !v)}
-              className="btn btn-ghost text-xs"
+              className="btn btn-ghost text-xs shrink-0"
             >
               {newestFirst ? t('notebook.newestFirst') : t('notebook.oldestFirst')}
             </button>
           </div>
           {notes.length === 0 ? (
             <p className="text-center py-8 text-gray-600">{t('notebook.noNotes')}</p>
+          ) : filteredNotes.length === 0 ? (
+            <p className="text-center py-8 text-gray-600">{t('notebook.noResults')}</p>
           ) : (
-            <Timeline notes={sortedNotes} onGenerateDoc={handleGenerateDoc} />
+            <Timeline notes={filteredNotes} onGenerateDoc={handleGenerateDoc} searchQuery={search} />
           )}
         </div>
       )}
