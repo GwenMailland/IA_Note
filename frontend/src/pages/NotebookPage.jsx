@@ -49,6 +49,10 @@ export default function NotebookPage() {
     setNotes(prev => prev.map(n => n.id === updated.id ? updated : n));
   }
 
+  function handleNoteDeleted(noteId) {
+    setNotes(prev => prev.filter(n => n.id !== noteId));
+  }
+
   function handleGenerateDoc(note = null) {
     setGenerateDocNote(note);
     setShowGenerateDoc(true);
@@ -164,7 +168,7 @@ export default function NotebookPage() {
           ) : filteredNotes.length === 0 ? (
             <p className="text-center py-8 text-gray-600">{t('notebook.noResults')}</p>
           ) : (
-            <Timeline notes={filteredNotes} onGenerateDoc={handleGenerateDoc} searchQuery={search} onNoteUpdated={handleNoteUpdated} onTagClick={tag => setActiveTag(activeTag === tag ? null : tag)} activeTag={activeTag} />
+            <Timeline notes={filteredNotes} onGenerateDoc={handleGenerateDoc} searchQuery={search} onNoteUpdated={handleNoteUpdated} onNoteDeleted={handleNoteDeleted} onTagClick={tag => setActiveTag(activeTag === tag ? null : tag)} activeTag={activeTag} />
           )}
         </div>
       )}

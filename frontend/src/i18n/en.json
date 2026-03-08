@@ -53,7 +53,10 @@
     "createDoc": "Create",
     "edit": "Edit",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this note?",
+    "deleting": "Deleting…"
   },
   "modal": {
     "newNotebook": "New notebook",

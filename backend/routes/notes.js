@@ -24,6 +24,12 @@ function queueReadmeUpdate(notebookId, note, language) {
   readmeQueues.set(notebookId, next);
 }
 
+function queueFullReadmeRegen(notebookId, language) {
+  const current = readmeQueues.get(notebookId) || Promise.resolve();
+  const next = current.then(() => regenReadmeAsync(notebookId, language)).catch(console.error);
+  readmeQueues.set(notebookId, next);
+}
+
 function buildNotePrompt(globalContext, noteContext, rawContent, language) {
   if (language === 'fr') {
     return `Tu es un assistant de prise de notes professionnelles.\n\nContexte global du bloc-note : ${globalContext}\nType de note : ${noteContext}\nContenu brut :\n${rawContent}\n\nTa réponse doit comporter DEUX parties dans cet ordre exact :\n\nPARTIE 1 — Note structurée en Markdown (commence directement par le contenu) :\n- Reformule et structure en Markdown propre\n- Conserve TOUTES les informations\n- Ajoute titres, listes si pertinent\n- Corrige orthographe et grammaire\n- Identifie décisions, TODO, questions ouvertes\n\n---AI_META---\n{"suggest_document": true ou false, "document_title": "titre si pertinent sinon null", "document_reason": "raison sinon null", "tags": ["tag1", "tag2"]}`;
@@ -135,6 +141,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+// DELETE /api/notebooks/:notebookId/notes/:noteId
+router.delete('/:noteId', async (req, res) => {
+  try {
+    const { notebookId, noteId } = req.params;
+    const deleted = storage.deleteNote(notebookId, noteId);
+    if (!deleted) return res.status(404).json({ error: 'Note not found' });
+
+    // Regenerate Mémoire without the deleted note (async, queued)
+    const notebook = storage.getNotebook(notebookId);
+    const language = notebook?.language || 'fr';
+    queueFullReadmeRegen(notebookId, language);
+
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PUT /api/notebooks/:notebookId/notes/:noteId
 router.put('/:noteId', (req, res) => {
   try {
@@ -148,6 +172,53 @@ router.put('/:noteId', (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+async function regenReadmeAsync(notebookId, language) {
+  try {
+    const notebook = storage.getNotebook(notebookId);
+    const notes = storage.getNotes(notebookId);
+
+    if (notes.length === 0) {
+      const fr = language === 'fr';
+      const blank = [
+        `# ${notebook?.title || notebookId}`,
+        '',
+        `## ${fr ? 'Contexte' : 'Context'}`,
+        notebook?.context || '',
+        '',
+        `## ${fr ? 'Synthèse évolutive' : 'Evolving summary'}`,
+        '',
+        `## ${fr ? 'Chronologie' : 'Timeline'}`,
+        '',
+        `## ${fr ? 'Actions en cours' : 'Pending actions'}`,
+        '',
+        `## ${fr ? 'Questions ouvertes' : 'Open questions'}`,
+        '',
+        `## ${fr ? 'Dernière mise à jour' : 'Last update'}`,
+        new Date().toISOString(),
+        ''
+      ].join('\n');
+      storage.saveReadme(notebookId, blank);
+      return;
+    }
+
+    const notesSummary = notes
+      .map(n => `### ${n.noteContext} (${new Date(n.createdAt).toLocaleString(language === 'fr' ? 'fr-FR' : 'en-US')})\n${n.structuredContent}`)
+      .join('\n\n---\n\n');
+
+    let prompt;
+    if (language === 'fr') {
+      prompt = `Tu régénères entièrement le README.md d'un bloc-note à partir de toutes ses notes.\n\nBloc-note : ${notebook?.title}\nContexte : ${notebook?.context}\n\nToutes les notes :\n${notesSummary}\n\nGénère un README Markdown complet avec : Synthèse évolutive, Chronologie, Actions en cours, Questions ouvertes, timestamp.\nRéponds UNIQUEMENT avec le README complet.`;
+    } else {
+      prompt = `You are regenerating a notebook's README.md from all its notes.\n\nNotebook: ${notebook?.title}\nContext: ${notebook?.context}\n\nAll notes:\n${notesSummary}\n\nGenerate a complete Markdown README with: Evolving summary, Timeline, Pending actions, Open questions, timestamp.\nReply ONLY with the complete README.`;
+    }
+
+    const result = await aiRouter.callAI(prompt, '');
+    storage.saveReadme(notebookId, result.content);
+  } catch (err) {
+    console.error('README regen failed:', err.message);
+  }
+}
 
 async function updateReadmeAsync(notebookId, note, language) {
   try {

@@ -127,6 +127,18 @@ function addNote(notebookId, note) {
   return note;
 }
 
+function deleteNote(notebookId, noteId) {
+  const notesPath = path.join(NOTEBOOKS_DIR, notebookId, 'notes.json');
+  const notes = getNotes(notebookId);
+  const idx = notes.findIndex(n => n.id === noteId);
+  if (idx === -1) return false;
+  notes.splice(idx, 1);
+  fs.writeFileSync(notesPath, JSON.stringify(notes, null, 2));
+  const meta = getNotebook(notebookId);
+  if (meta) updateNotebook(notebookId, { noteCount: notes.length });
+  return true;
+}
+
 function updateNote(notebookId, noteId, updates) {
   const notesPath = path.join(NOTEBOOKS_DIR, notebookId, 'notes.json');
   const notes = getNotes(notebookId);
@@ -186,6 +198,7 @@ module.exports = {
   getNotes,
   addNote,
   updateNote,
+  deleteNote,
   getReadme,
   saveReadme,
   getDocuments,

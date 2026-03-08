@@ -37,7 +37,7 @@ function highlightMarkdown(content, query) {
   );
 }
 
-export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNoteUpdated, onTagClick, activeTag }) {
+export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNoteUpdated, onNoteDeleted, onTagClick, activeTag }) {
   const { t, lang } = useTranslation();
   const [showRaw, setShowRaw] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -45,6 +45,8 @@ export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNote
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState('');
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   function startEdit() {
     setEditContent(note.structuredContent);
@@ -65,6 +67,18 @@ export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNote
       onNoteUpdated?.(updated);
     } catch (e) { console.error(e); }
     finally { setSaving(false); }
+  }
+
+  async function handleDelete() {
+    if (!confirmDelete) { setConfirmDelete(true); return; }
+    setDeleting(true);
+    try {
+      const r = await fetch(`http://localhost:3001/api/notebooks/${note.notebookId}/notes/${note.id}`, {
+        method: 'DELETE'
+      });
+      if (!r.ok) throw new Error('Failed');
+      onNoteDeleted?.(note.id);
+    } catch (e) { console.error(e); setDeleting(false); setConfirmDelete(false); }
   }
 
   async function handleCopy() {
@@ -184,9 +198,38 @@ export default function NoteCard({ note, onGenerateDoc, searchQuery = '', onNote
               <button onClick={() => onGenerateDoc(note)} className="btn btn-ghost text-xs">
                 {t('noteCard.generateDoc')}
               </button>
-              <button onClick={handleCopy} className="btn btn-ghost text-xs ml-auto">
-                {copied ? t('noteCard.copied') : t('noteCard.copy')}
-              </button>
+              <div className="ml-auto flex items-center gap-2">
+                {confirmDelete ? (
+                  <>
+                    <span className="text-xs text-red-400">{t('noteCard.deleteConfirm')}</span>
+                    <button
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      className="btn text-xs bg-red-800 hover:bg-red-700 text-red-100"
+                    >
+                      {deleting ? t('noteCard.deleting') : t('noteCard.delete')}
+                    </button>
+                    <button
+                      onClick={() => setConfirmDelete(false)}
+                      className="btn btn-ghost text-xs"
+                    >
+                      {t('noteCard.cancel')}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={handleCopy} className="btn btn-ghost text-xs">
+                      {copied ? t('noteCard.copied') : t('noteCard.copy')}
+                    </button>
+                    <button
+                      onClick={() => setConfirmDelete(true)}
+                      className="btn btn-ghost text-xs text-red-500 hover:text-red-400"
+                    >
+                      {t('noteCard.delete')}
+                    </button>
+                  </>
+                )}
+              </div>
             </>
           )}
         </div>
