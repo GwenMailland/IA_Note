@@ -7,6 +7,7 @@ import DocumentsTab from '../components/DocumentsTab';
 import ReadmeTab from '../components/ReadmeTab';
 import EditContextModal from '../components/EditContextModal';
 import GenerateDocModal from '../components/GenerateDocModal';
+import Spinner from '../components/Spinner';
 
 const TABS = ['timeline', 'documents', 'readme'];
 
@@ -49,7 +50,7 @@ export default function NotebookPage() {
 
   const sortedNotes = newestFirst ? notes : [...notes].reverse();
 
-  if (loading) return <div className="text-center py-16 text-gray-500">...</div>;
+  if (loading) return <div className="py-16"><Spinner size="lg" /></div>;
   if (!notebook) return <div className="text-center py-16 text-red-400">Notebook not found</div>;
 
   return (

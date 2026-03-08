@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Spinner from './Spinner';
 
 export default function ReadmeTab({ notebookId }) {
   const [content, setContent] = useState('');
@@ -13,7 +14,7 @@ export default function ReadmeTab({ notebookId }) {
       .catch(() => setLoading(false));
   }, [notebookId]);
 
-  if (loading) return <div className="text-center py-8 text-gray-500">...</div>;
+  if (loading) return <div className="py-8"><Spinner /></div>;
 
   return (
     <div className="card p-6">

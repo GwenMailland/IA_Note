@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useTranslation } from '../hooks/useTranslation';
+import Spinner from './Spinner';
 
 function formatDate(iso, lang) {
   return new Date(iso).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
@@ -29,7 +30,7 @@ export default function DocumentsTab({ notebookId, onGenerate }) {
     finally { setLoading(false); }
   }
 
-  if (loading) return <div className="text-center py-8 text-gray-500">...</div>;
+  if (loading) return <div className="py-8"><Spinner /></div>;
 
   return (
     <div className="flex gap-4 min-h-[400px]">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import NewNotebookModal from '../components/NewNotebookModal';
+import Spinner from '../components/Spinner';
 
 function formatDate(iso, lang) {
   return new Date(iso).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
@@ -69,7 +70,7 @@ export default function HomePage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-gray-500">...</div>
+        <div className="py-16"><Spinner size="lg" /></div>
       ) : notebooks.length === 0 ? (
         <div className="text-center py-16 text-gray-500">
           <div className="text-4xl mb-4">📓</div>

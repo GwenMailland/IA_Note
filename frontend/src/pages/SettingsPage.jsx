@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
+import Spinner from '../components/Spinner';
 
 const GROQ_MODELS = [
   'llama-3.3-70b-versatile',
@@ -112,7 +113,7 @@ export default function SettingsPage() {
     setTimeout(() => setClaudeTest(''), 3000);
   }
 
-  if (!config) return <div className="text-center py-16 text-gray-500">...</div>;
+  if (!config) return <div className="py-16"><Spinner size="lg" /></div>;
 
   return (
     <div className="max-w-2xl">
@@ -166,7 +167,7 @@ export default function SettingsPage() {
         <div className="flex items-center gap-2 mb-3">
           <span className="text-sm text-gray-400">{t('settings.ollama.status')} :</span>
           {ollamaStatus === null ? (
-            <span className="badge badge-gray">…</span>
+            <span className="badge badge-gray"><Spinner size="sm" /></span>
           ) : ollamaStatus ? (
             <span className="badge badge-green">{t('settings.ollama.available')}</span>
           ) : (
