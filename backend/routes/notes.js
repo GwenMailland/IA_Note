@@ -15,6 +15,15 @@ router.get('/', (req, res) => {
   }
 });
 
+// Per-notebook README update queue (prevents concurrent README overwrites)
+const readmeQueues = new Map();
+
+function queueReadmeUpdate(notebookId, note, language) {
+  const current = readmeQueues.get(notebookId) || Promise.resolve();
+  const next = current.then(() => updateReadmeAsync(notebookId, note, language)).catch(console.error);
+  readmeQueues.set(notebookId, next);
+}
+
 // POST /api/notebooks/:notebookId/notes
 router.post('/', async (req, res) => {
   try {
@@ -55,8 +64,8 @@ router.post('/', async (req, res) => {
 
     storage.addNote(notebookId, note);
 
-    // Update README incrementally (async, don't block response)
-    updateReadmeAsync(notebookId, note, language).catch(console.error);
+    // Update README incrementally (queued to prevent concurrent overwrites)
+    queueReadmeUpdate(notebookId, note, language);
 
     res.status(201).json(note);
   } catch (err) {
