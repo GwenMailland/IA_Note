@@ -39,7 +39,9 @@
     "notConfigured": "non configuré",
     "submit": "Envoyer & Structurer",
     "submitting": "Structuration en cours…",
-    "required": "Ce champ est requis"
+    "required": "Ce champ est requis",
+    "preview": "Aperçu",
+    "editMode": "Éditer"
   },
   "noteCard": {
     "structured": "Structuré",

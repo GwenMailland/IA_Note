@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useTranslation } from '../hooks/useTranslation';
 
 const PROVIDERS = ['ollama', 'groq', 'claude'];
@@ -11,6 +13,7 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [providerStatus, setProviderStatus] = useState({ ollama: false, groq: false, claude: false });
+  const [preview, setPreview] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -34,6 +37,7 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
 
     setSubmitting(true);
     setErrors({});
+    setPreview(false);
     try {
       const r = await fetch(`http://localhost:3001/api/notebooks/${notebookId}/notes`, {
         method: 'POST',
@@ -74,13 +78,37 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
       </div>
 
       <div className="mb-3">
-        <textarea
-          value={rawContent}
-          onChange={e => { setRawContent(e.target.value); setErrors({}); }}
-          placeholder={t('noteForm.rawContentPlaceholder')}
-          rows={5}
-          className="input w-full resize-none text-sm"
-        />
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs text-gray-500">{t('noteForm.rawContent')}</span>
+          {rawContent.trim() && (
+            <button
+              type="button"
+              onClick={() => setPreview(v => !v)}
+              className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
+              {preview ? t('noteForm.editMode') : t('noteForm.preview')}
+            </button>
+          )}
+        </div>
+
+        {preview ? (
+          <div
+            className="input w-full text-sm min-h-[120px] cursor-text overflow-y-auto max-h-64 prose prose-invert prose-sm max-w-none prose-p:my-1 prose-li:my-0"
+            onClick={() => setPreview(false)}
+          >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {rawContent}
+            </ReactMarkdown>
+          </div>
+        ) : (
+          <textarea
+            value={rawContent}
+            onChange={e => { setRawContent(e.target.value); setErrors({}); }}
+            placeholder={t('noteForm.rawContentPlaceholder')}
+            rows={5}
+            className="input w-full resize-none text-sm"
+          />
+        )}
         {errors.rawContent && <p className="text-red-400 text-xs mt-1">{errors.rawContent}</p>}
       </div>
 

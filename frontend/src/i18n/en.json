@@ -39,7 +39,9 @@
     "notConfigured": "not configured",
     "submit": "Send & Structure",
     "submitting": "Structuring…",
-    "required": "This field is required"
+    "required": "This field is required",
+    "preview": "Preview",
+    "editMode": "Edit"
   },
   "noteCard": {
     "structured": "Structured",
