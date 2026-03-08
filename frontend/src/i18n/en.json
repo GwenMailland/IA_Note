@@ -1,0 +1,124 @@
+{
+  "app": {
+    "name": "NoteFlow",
+    "tagline": "AI-augmented note taking"
+  },
+  "nav": {
+    "notebooks": "Notebooks",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "My notebooks",
+    "newNotebook": "New notebook",
+    "noNotebooks": "No notebooks yet. Create one!",
+    "notes": "notes",
+    "note": "note",
+    "lastActivity": "Last activity",
+    "createdOn": "Created on"
+  },
+  "notebook": {
+    "newNote": "New note",
+    "timeline": "Timeline",
+    "documents": "Documents",
+    "readme": "README",
+    "editContext": "Edit context",
+    "noNotes": "No notes yet. Add your first note!",
+    "newestFirst": "Newest first",
+    "oldestFirst": "Oldest first"
+  },
+  "noteForm": {
+    "title": "Add a note",
+    "noteContext": "Note context",
+    "noteContextPlaceholder": "e.g.: Kick-off meeting, Supplier call, API brainstorm…",
+    "rawContent": "Raw content",
+    "rawContentPlaceholder": "Your unformatted notes…",
+    "providerOverride": "AI provider (optional)",
+    "defaultProvider": "Default provider",
+    "submit": "Send & Structure",
+    "submitting": "Structuring…",
+    "required": "This field is required"
+  },
+  "noteCard": {
+    "structured": "Structured",
+    "raw": "Raw",
+    "generateDoc": "Generate document",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "suggestDoc": "AI suggests a document",
+    "createDoc": "Create"
+  },
+  "modal": {
+    "newNotebook": "New notebook",
+    "title": "Title",
+    "titlePlaceholder": "e.g.: Project Nexus, Supplier tracking, 2025 files…",
+    "globalContext": "Global context",
+    "globalContextPlaceholder": "Describe the context, objectives, stakeholders…",
+    "suggestContext": "Suggest via AI",
+    "suggesting": "Generating…",
+    "create": "Create",
+    "cancel": "Cancel",
+    "editContext": "Edit global context",
+    "save": "Save",
+    "generateDoc": "Generate document",
+    "docTitle": "Document title",
+    "docTitlePlaceholder": "e.g.: Meeting minutes, Action plan…",
+    "docInstructions": "Specific instructions (optional)",
+    "docInstructionsPlaceholder": "Specify format, target audience, desired sections…",
+    "generate": "Generate",
+    "generating": "Generating…"
+  },
+  "documents": {
+    "noDocuments": "No documents yet. Generate one from a note or using the button below.",
+    "newDocument": "New document",
+    "lastUpdated": "Updated on"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "french": "Français",
+    "english": "English",
+    "activeProvider": "Active AI provider",
+    "ollama": {
+      "title": "Ollama (local, free)",
+      "status": "Status",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "model": "Model",
+      "recommended": "recommended",
+      "noModels": "No models installed",
+      "helpText": "Ollama is not accessible. Launch it with: ollama serve"
+    },
+    "groq": {
+      "title": "Groq (free cloud)",
+      "apiKey": "API Key",
+      "apiKeyPlaceholder": "gsk_…",
+      "model": "Model",
+      "test": "Test",
+      "testing": "Testing…",
+      "testOk": "Valid key!",
+      "testFail": "Invalid key"
+    },
+    "claude": {
+      "title": "Claude API (optional)",
+      "apiKey": "API Key",
+      "apiKeyPlaceholder": "sk-ant-…",
+      "model": "Model",
+      "test": "Test",
+      "testing": "Testing…",
+      "testOk": "Valid key!",
+      "testFail": "Invalid key"
+    },
+    "save": "Save",
+    "saved": "Saved!"
+  },
+  "providers": {
+    "ollama": "Ollama",
+    "groq": "Groq",
+    "claude": "Claude"
+  },
+  "errors": {
+    "loadFailed": "Load failed",
+    "saveFailed": "Save failed",
+    "aiFailed": "AI error"
+  }
+}

@@ -1,0 +1,80 @@
+const express = require('express');
+const router = express.Router({ mergeParams: true });
+const storage = require('../services/storageService');
+const aiRouter = require('../services/aiRouter');
+const { slugify } = require('../services/markdownService');
+
+// GET /api/notebooks/:notebookId/documents
+router.get('/', (req, res) => {
+  try {
+    const docs = storage.getDocuments(req.params.notebookId);
+    res.json(docs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/notebooks/:notebookId/documents/:slug
+router.get('/:slug', (req, res) => {
+  try {
+    const content = storage.getDocument(req.params.notebookId, req.params.slug);
+    if (!content) return res.status(404).json({ error: 'Document not found' });
+    res.json({ slug: req.params.slug, content });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/notebooks/:notebookId/documents/generate
+router.post('/generate', async (req, res) => {
+  try {
+    const { notebookId } = req.params;
+    const { title, instructions = '', noteId, language = 'fr', provider } = req.body;
+
+    if (!title) return res.status(400).json({ error: 'Title is required' });
+
+    const notebook = storage.getNotebook(notebookId);
+    if (!notebook) return res.status(404).json({ error: 'Notebook not found' });
+
+    const notes = storage.getNotes(notebookId);
+    const notesSummary = notes
+      .slice(0, 10)
+      .map(n => `### ${n.noteContext} (${new Date(n.createdAt).toLocaleDateString()})\n${n.structuredContent}`)
+      .join('\n\n---\n\n');
+
+    let specificNote = '';
+    if (noteId) {
+      const note = notes.find(n => n.id === noteId);
+      if (note) specificNote = note.structuredContent;
+    }
+
+    let prompt;
+    if (language === 'fr') {
+      prompt = `Tu génères un document Markdown professionnel.\n\nBloc-note : ${notebook.title}\nContexte : ${notebook.context}\nTitre du document : ${title}\n${instructions ? `Instructions spécifiques : ${instructions}\n` : ''}\n${specificNote ? `Note source :\n${specificNote}\n` : `Notes disponibles :\n${notesSummary}`}\n\nGénère un document Markdown complet, structuré et professionnel. Réponds UNIQUEMENT avec le Markdown.`;
+    } else {
+      prompt = `You are generating a professional Markdown document.\n\nNotebook: ${notebook.title}\nContext: ${notebook.context}\nDocument title: ${title}\n${instructions ? `Specific instructions: ${instructions}\n` : ''}\n${specificNote ? `Source note:\n${specificNote}\n` : `Available notes:\n${notesSummary}`}\n\nGenerate a complete, structured and professional Markdown document. Reply ONLY with the Markdown.`;
+    }
+
+    const result = await aiRouter.callAI(prompt, '', { provider });
+
+    const slug = slugify(title);
+    storage.saveDocument(notebookId, slug, result.content);
+
+    res.status(201).json({ slug, title, content: result.content, provider: result.provider, model: result.model });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/notebooks/:notebookId/documents/:slug
+router.put('/:slug', (req, res) => {
+  try {
+    const { content } = req.body;
+    storage.saveDocument(req.params.notebookId, req.params.slug, content);
+    res.json({ slug: req.params.slug, content });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
