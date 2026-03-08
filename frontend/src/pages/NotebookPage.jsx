@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import NoteForm from '../components/NoteForm';
 import Timeline from '../components/Timeline';
@@ -55,6 +55,13 @@ export default function NotebookPage() {
 
   return (
     <div>
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+        <Link to="/" className="hover:text-gray-300 transition-colors">{t('nav.notebooks')}</Link>
+        <span>›</span>
+        <span className="text-gray-300 truncate">{notebook.title}</span>
+      </nav>
+
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-start justify-between gap-4">
