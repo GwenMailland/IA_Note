@@ -73,7 +73,9 @@
   "documents": {
     "noDocuments": "Aucun document. Générez-en un depuis une note ou via le bouton ci-dessous.",
     "newDocument": "Nouveau document",
-    "lastUpdated": "Mis à jour le"
+    "lastUpdated": "Mis à jour le",
+    "downloadMd": "Télécharger .md",
+    "exportZip": "Exporter tout (.zip)"
   },
   "settings": {
     "title": "Paramètres",
