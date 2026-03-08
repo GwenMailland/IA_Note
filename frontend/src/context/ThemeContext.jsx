@@ -14,11 +14,6 @@ export function ThemeProvider({ children }) {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  // Apply on mount
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, []); // eslint-disable-line
-
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}

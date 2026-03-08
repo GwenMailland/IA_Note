@@ -25,6 +25,18 @@ router.get('/:slug', (req, res) => {
   }
 });
 
+const MAX_NOTES_CHARS = 40000;
+
+function buildNotesSummary(notes) {
+  let summary = '';
+  for (const n of notes) {
+    const entry = `### ${n.noteContext} (${new Date(n.createdAt).toLocaleDateString()})\n${n.structuredContent}\n\n---\n\n`;
+    if (summary.length + entry.length > MAX_NOTES_CHARS) break;
+    summary += entry;
+  }
+  return summary.trimEnd();
+}
+
 function buildDocPrompt(notebook, title, instructions, specificNote, notesSummary, language) {
   if (language === 'fr') {
     return `Tu génères un document Markdown professionnel.\n\nBloc-note : ${notebook.title}\nContexte : ${notebook.context}\nTitre du document : ${title}\n${instructions ? `Instructions spécifiques : ${instructions}\n` : ''}\n${specificNote ? `Note source :\n${specificNote}\n` : `Notes disponibles :\n${notesSummary}`}\n\nGénère un document Markdown complet, structuré et professionnel. Réponds UNIQUEMENT avec le Markdown.`;
@@ -62,10 +74,7 @@ router.post('/generate/stream', async (req, res) => {
     send({ step: 'loading', progress: 25, label: language === 'fr' ? 'Chargement des notes…' : 'Loading notes…' });
 
     const notes = storage.getNotes(notebookId);
-    const notesSummary = notes
-      .slice(0, 10)
-      .map(n => `### ${n.noteContext} (${new Date(n.createdAt).toLocaleDateString()})\n${n.structuredContent}`)
-      .join('\n\n---\n\n');
+    const notesSummary = buildNotesSummary(notes);
 
     let specificNote = '';
     if (noteId) {
@@ -104,10 +113,7 @@ router.post('/generate', async (req, res) => {
     if (!notebook) return res.status(404).json({ error: 'Notebook not found' });
 
     const notes = storage.getNotes(notebookId);
-    const notesSummary = notes
-      .slice(0, 10)
-      .map(n => `### ${n.noteContext} (${new Date(n.createdAt).toLocaleDateString()})\n${n.structuredContent}`)
-      .join('\n\n---\n\n');
+    const notesSummary = buildNotesSummary(notes);
 
     let specificNote = '';
     if (noteId) {

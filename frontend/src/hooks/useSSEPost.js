@@ -15,6 +15,7 @@ export async function ssePost(url, body, onProgress) {
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
+  let lastError = null;
 
   while (true) {
     const { done, value } = await reader.read();
@@ -27,14 +28,34 @@ export async function ssePost(url, body, onProgress) {
     for (const part of parts) {
       const line = part.trim();
       if (!line.startsWith('data: ')) continue;
-      const data = JSON.parse(line.slice(6));
 
-      if (data.error) throw new Error(data.error);
+      let data;
+      try {
+        data = JSON.parse(line.slice(6));
+      } catch {
+        continue; // skip malformed event
+      }
+
+      if (data.error) {
+        lastError = new Error(data.error);
+        throw lastError;
+      }
       if (data.step === 'done') return data.result;
 
       onProgress(data);
     }
   }
 
-  throw new Error('Stream ended without result');
+  // Process any remaining buffered data
+  if (buffer.trim().startsWith('data: ')) {
+    try {
+      const data = JSON.parse(buffer.trim().slice(6));
+      if (data.error) throw new Error(data.error);
+      if (data.step === 'done') return data.result;
+    } catch (e) {
+      if (e.message !== 'Unexpected end of JSON input') throw e;
+    }
+  }
+
+  throw lastError || new Error('La connexion au serveur a été interrompue');
 }
