@@ -20,7 +20,7 @@
     "newNote": "New note",
     "timeline": "Timeline",
     "documents": "Documents",
-    "readme": "README",
+    "readme": "Memory",
     "editContext": "Edit context",
     "noNotes": "No notes yet. Add your first note!",
     "newestFirst": "Newest first",
@@ -48,7 +48,10 @@
     "copy": "Copy",
     "copied": "Copied!",
     "suggestDoc": "AI suggests a document",
-    "createDoc": "Create"
+    "createDoc": "Create",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "modal": {
     "newNotebook": "New notebook",

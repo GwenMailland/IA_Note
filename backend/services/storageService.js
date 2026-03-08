@@ -127,6 +127,16 @@ function addNote(notebookId, note) {
   return note;
 }
 
+function updateNote(notebookId, noteId, updates) {
+  const notesPath = path.join(NOTEBOOKS_DIR, notebookId, 'notes.json');
+  const notes = getNotes(notebookId);
+  const idx = notes.findIndex(n => n.id === noteId);
+  if (idx === -1) return null;
+  notes[idx] = { ...notes[idx], ...updates, updatedAt: new Date().toISOString() };
+  fs.writeFileSync(notesPath, JSON.stringify(notes, null, 2));
+  return notes[idx];
+}
+
 function getReadme(notebookId) {
   const readmePath = path.join(NOTEBOOKS_DIR, notebookId, 'README.md');
   if (!fs.existsSync(readmePath)) return '';
@@ -175,6 +185,7 @@ module.exports = {
   updateNotebook,
   getNotes,
   addNote,
+  updateNote,
   getReadme,
   saveReadme,
   getDocuments,

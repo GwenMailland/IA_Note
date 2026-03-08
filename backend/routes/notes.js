@@ -73,6 +73,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT /api/notebooks/:notebookId/notes/:noteId
+router.put('/:noteId', (req, res) => {
+  try {
+    const { notebookId, noteId } = req.params;
+    const { structuredContent } = req.body;
+    if (!structuredContent) return res.status(400).json({ error: 'structuredContent is required' });
+    const updated = storage.updateNote(notebookId, noteId, { structuredContent });
+    if (!updated) return res.status(404).json({ error: 'Note not found' });
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 async function updateReadmeAsync(notebookId, note, language) {
   try {
     const currentReadme = storage.getReadme(notebookId);

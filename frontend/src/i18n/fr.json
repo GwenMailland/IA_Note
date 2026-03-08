@@ -20,7 +20,7 @@
     "newNote": "Nouvelle note",
     "timeline": "Timeline",
     "documents": "Documents",
-    "readme": "README",
+    "readme": "Mémoire",
     "editContext": "Modifier le contexte",
     "noNotes": "Aucune note. Ajoutez votre première note !",
     "newestFirst": "Plus récent en haut",
@@ -48,7 +48,10 @@
     "copy": "Copier",
     "copied": "Copié !",
     "suggestDoc": "L'IA suggère un document",
-    "createDoc": "Créer"
+    "createDoc": "Créer",
+    "edit": "Éditer",
+    "save": "Sauvegarder",
+    "cancel": "Annuler"
   },
   "modal": {
     "newNotebook": "Nouveau bloc-note",

@@ -44,6 +44,10 @@ export default function NotebookPage() {
     setNotes(prev => [note, ...prev]);
   }
 
+  function handleNoteUpdated(updated) {
+    setNotes(prev => prev.map(n => n.id === updated.id ? updated : n));
+  }
+
   function handleGenerateDoc(note = null) {
     setGenerateDocNote(note);
     setShowGenerateDoc(true);
@@ -139,7 +143,7 @@ export default function NotebookPage() {
           ) : filteredNotes.length === 0 ? (
             <p className="text-center py-8 text-gray-600">{t('notebook.noResults')}</p>
           ) : (
-            <Timeline notes={filteredNotes} onGenerateDoc={handleGenerateDoc} searchQuery={search} />
+            <Timeline notes={filteredNotes} onGenerateDoc={handleGenerateDoc} searchQuery={search} onNoteUpdated={handleNoteUpdated} />
           )}
         </div>
       )}
