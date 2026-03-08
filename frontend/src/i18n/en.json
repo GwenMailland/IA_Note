@@ -34,6 +34,7 @@
     "rawContentPlaceholder": "Your unformatted notes…",
     "providerOverride": "AI provider (optional)",
     "defaultProvider": "Default provider",
+    "notConfigured": "not configured",
     "submit": "Send & Structure",
     "submitting": "Structuring…",
     "required": "This field is required"

@@ -34,6 +34,7 @@
     "rawContentPlaceholder": "Vos notes en vrac, sans mise en forme…",
     "providerOverride": "Provider IA (optionnel)",
     "defaultProvider": "Provider par défaut",
+    "notConfigured": "non configuré",
     "submit": "Envoyer & Structurer",
     "submitting": "Structuration en cours…",
     "required": "Ce champ est requis"

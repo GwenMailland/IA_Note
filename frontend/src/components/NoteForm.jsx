@@ -10,6 +10,20 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
   const [provider, setProvider] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [providerStatus, setProviderStatus] = useState({ ollama: false, groq: false, claude: false });
+
+  useEffect(() => {
+    Promise.all([
+      fetch('http://localhost:3001/api/config').then(r => r.json()).catch(() => null),
+      fetch('http://localhost:3001/api/ai/ollama/status').then(r => r.json()).catch(() => ({ available: false }))
+    ]).then(([cfg, ollamaData]) => {
+      setProviderStatus({
+        ollama: ollamaData?.available || false,
+        groq: !!cfg?.ai?.groq?.apiKey,
+        claude: !!cfg?.ai?.claude?.apiKey
+      });
+    });
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -78,7 +92,9 @@ export default function NoteForm({ notebookId, onNoteAdded }) {
         >
           <option value="">{t('noteForm.defaultProvider')}</option>
           {PROVIDERS.map(p => (
-            <option key={p} value={p}>{t(`providers.${p}`)}</option>
+            <option key={p} value={p} disabled={!providerStatus[p]}>
+              {t(`providers.${p}`)}{!providerStatus[p] ? ` (${t('noteForm.notConfigured')})` : ''}
+            </option>
           ))}
         </select>
 
