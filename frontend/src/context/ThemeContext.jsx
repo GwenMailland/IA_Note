@@ -3,7 +3,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext({ theme: 'dark', setTheme: () => {} });
 
 export function ThemeProvider({ children }) {
-  const [theme, setThemeState] = useState(() => localStorage.getItem('nf-theme') || 'dark');
+  const [theme, setThemeState] = useState(() => {
+    const stored = localStorage.getItem('nf-theme');
+    return (stored === 'dark' || stored === 'light') ? stored : 'dark';
+  });
 
   function setTheme(t) {
     setThemeState(t);

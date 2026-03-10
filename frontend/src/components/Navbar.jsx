@@ -4,9 +4,8 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../context/ThemeContext';
 
 const THEMES = [
-  { id: 'dark',  label: '◆', title: 'Dark',  color: '#6366f1' },
-  { id: 'light', label: '◆', title: 'Light', color: '#e5e7eb' },
-  { id: 'blood', label: '◆', title: 'Blood', color: '#ef4444' },
+  { id: 'dark',  label: '◆', title: 'Obsidian', color: '#c4b5fd' },
+  { id: 'light', label: '◆', title: 'Light',    color: '#7c3aed' },
 ];
 
 export default function Navbar() {
@@ -27,31 +26,45 @@ export default function Navbar() {
     : '';
 
   return (
-    <nav className="border-b border-gray-800 bg-gray-900 sticky top-0 z-10">
+    <nav className="border-b border-gray-800 bg-gray-900 sticky top-0 z-10 backdrop-blur-md"
+         style={{ backgroundColor: 'rgba(22,22,31,0.85)', borderColor: 'var(--nf-border)' }}>
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg text-white">
-            <span style={{ color: 'var(--nf-accent)' }}>◆</span>
-            {t('app.name')}
+          <Link to="/" className="flex items-center gap-2 font-bold text-lg"
+                style={{ color: 'var(--nf-text)' }}>
+            <span style={{
+              color: 'var(--nf-accent)',
+              filter: 'drop-shadow(0 0 6px rgba(124,58,237,0.6))',
+              fontSize: '0.9em'
+            }}>◆</span>
+            <span style={{ letterSpacing: '-0.02em' }}>{t('app.name')}</span>
           </Link>
           <div className="flex items-center gap-1">
             <Link
               to="/"
-              className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
                 location.pathname === '/'
-                  ? 'bg-gray-800 text-white'
+                  ? 'text-white font-medium'
                   : 'text-gray-400 hover:text-white'
               }`}
+              style={location.pathname === '/' ? {
+                backgroundColor: 'var(--nf-elevated)',
+                color: 'var(--nf-text)'
+              } : {}}
             >
               {t('nav.notebooks')}
             </Link>
             <Link
               to="/settings"
-              className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
                 location.pathname === '/settings'
-                  ? 'bg-gray-800 text-white'
+                  ? 'text-white font-medium'
                   : 'text-gray-400 hover:text-white'
               }`}
+              style={location.pathname === '/settings' ? {
+                backgroundColor: 'var(--nf-elevated)',
+                color: 'var(--nf-text)'
+              } : {}}
             >
               {t('nav.settings')}
             </Link>
@@ -64,16 +77,21 @@ export default function Navbar() {
           )}
 
           {/* Theme switcher */}
-          <div className="flex items-center gap-1 bg-gray-800 rounded-md p-0.5">
+          <div className="flex items-center gap-0.5 rounded-lg p-0.5"
+               style={{ backgroundColor: 'var(--nf-elevated)', border: '1px solid var(--nf-border)' }}>
             {THEMES.map(th => (
               <button
                 key={th.id}
                 onClick={() => setTheme(th.id)}
                 title={th.title}
-                className={`px-2 py-1 rounded text-xs font-bold transition-all ${
-                  theme === th.id ? 'bg-gray-700 opacity-100' : 'opacity-40 hover:opacity-70'
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
+                  theme === th.id ? 'opacity-100' : 'opacity-35 hover:opacity-65'
                 }`}
-                style={{ color: th.color }}
+                style={{
+                  color: th.color,
+                  backgroundColor: theme === th.id ? 'var(--nf-surface)' : 'transparent',
+                  boxShadow: theme === th.id ? '0 0 8px rgba(124,58,237,0.3)' : 'none',
+                }}
               >
                 {th.label}
               </button>
@@ -81,25 +99,23 @@ export default function Navbar() {
           </div>
 
           {/* Language switcher */}
-          <div className="flex items-center gap-1 bg-gray-800 rounded-md p-0.5">
-            <button
-              onClick={() => setLang('fr')}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                lang === 'fr' ? 'text-white' : 'text-gray-400 hover:text-white'
-              }`}
-              style={lang === 'fr' ? { backgroundColor: 'var(--nf-accent)' } : {}}
-            >
-              FR
-            </button>
-            <button
-              onClick={() => setLang('en')}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                lang === 'en' ? 'text-white' : 'text-gray-400 hover:text-white'
-              }`}
-              style={lang === 'en' ? { backgroundColor: 'var(--nf-accent)' } : {}}
-            >
-              EN
-            </button>
+          <div className="flex items-center gap-0.5 rounded-lg p-0.5"
+               style={{ backgroundColor: 'var(--nf-elevated)', border: '1px solid var(--nf-border)' }}>
+            {['fr', 'en'].map(l => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                  lang === l ? 'text-white' : 'text-gray-400 hover:text-white'
+                }`}
+                style={lang === l ? {
+                  backgroundColor: 'var(--nf-accent)',
+                  boxShadow: '0 0 8px rgba(124,58,237,0.4)',
+                } : {}}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
       </div>

@@ -21,6 +21,7 @@
     "timeline": "Timeline",
     "documents": "Documents",
     "readme": "Memory",
+    "chat": "AI Chat",
     "editContext": "Edit context",
     "noNotes": "No notes yet. Add your first note!",
     "newestFirst": "Newest first",
@@ -133,5 +134,26 @@
     "loadFailed": "Load failed",
     "saveFailed": "Save failed",
     "aiFailed": "AI error"
+  },
+  "chat": {
+    "title": "Ask your notebook",
+    "subtitle": "The AI answers based on all your notes",
+    "placeholder": "e.g.: What decisions were made? What is the project status?",
+    "hint": "Enter to send · Shift+Enter for new line",
+    "thinking": "Thinking…",
+    "empty": {
+      "title": "Ask your notebook anything",
+      "hint": "I will answer based only on the notes in this notebook."
+    },
+    "suggestions": [
+      "What decisions were made?",
+      "What are the blockers?",
+      "Summarize the project progress",
+      "What actions are pending?"
+    ]
+  },
+  "weekly": {
+    "banner": "notes this week — summary available",
+    "generate": "Generate summary"
   }
 }

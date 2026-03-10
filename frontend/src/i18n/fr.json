@@ -21,6 +21,7 @@
     "timeline": "Timeline",
     "documents": "Documents",
     "readme": "Mémoire",
+    "chat": "Chat IA",
     "editContext": "Modifier le contexte",
     "noNotes": "Aucune note. Ajoutez votre première note !",
     "newestFirst": "Plus récent en haut",
@@ -133,5 +134,26 @@
     "loadFailed": "Chargement échoué",
     "saveFailed": "Sauvegarde échouée",
     "aiFailed": "Erreur IA"
+  },
+  "chat": {
+    "title": "Pose une question à ton carnet",
+    "subtitle": "L'IA répond en s'appuyant sur toutes tes notes",
+    "placeholder": "Ex : Quelles sont les décisions prises cette semaine ? Quel est l'état du projet ?",
+    "hint": "Entrée pour envoyer · Maj+Entrée pour sauter une ligne",
+    "thinking": "Réflexion en cours…",
+    "empty": {
+      "title": "Pose une question à ton carnet",
+      "hint": "Je vais répondre en m'appuyant uniquement sur les notes de ce bloc-note."
+    },
+    "suggestions": [
+      "Quelles décisions ont été prises ?",
+      "Quels sont les points bloquants ?",
+      "Résume l'avancement du projet",
+      "Quelles actions sont en attente ?"
+    ]
+  },
+  "weekly": {
+    "banner": "notes cette semaine — résumé disponible",
+    "generate": "Générer le résumé"
   }
 }
