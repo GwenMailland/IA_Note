@@ -1,0 +1,121 @@
+[
+  {
+    "id": "c7d8e9f0-1234-5678-9abc-def012345607",
+    "notebookId": "d4e8a2f1-3b7c-4d9e-a1b2-c3d4e5f67890",
+    "noteContext": "Décision stratégique",
+    "rawContent": "Réunion board : go partenariat. Budget alloué 150k pour Q2. Thomas validé comme contact principal côté TechVentures. Signature prévue avant fin mars. Point à vérifier : clause exclusivité zone ibérique.",
+    "structuredContent": "# Décision stratégique — GO partenariat TechVentures\n\n## ✅ Décision\nLe board a validé le lancement du partenariat avec TechVentures.\n\n## Budget & Organisation\n- **Budget alloué** : 150 000 € pour Q2 2026\n- **Contact principal TechVentures** : Thomas Reyes (confirmé)\n- **Signature cible** : avant fin mars 2026\n\n## ⚠️ Point en suspens\n- Vérifier la **clause d'exclusivité zone ibérique** (article 12) avant signature\n  - Impact potentiel sur nos autres prospects en Espagne\n\n## TODO\n- [ ] Relire article 12 avec Maître Dupont\n- [ ] Préparer version finale du contrat\n- [ ] Planifier cérémonie de signature",
+    "meta": {
+      "suggest_document": true,
+      "document_title": "Synthèse accord partenariat TechVentures",
+      "document_reason": "Récapituler les termes validés par le board pour archivage et suivi",
+      "tags": ["décision", "board", "contrat", "signature"]
+    },
+    "provider": "ollama",
+    "model": "qwen2.5:72b",
+    "language": "fr",
+    "createdAt": "2026-03-08T14:30:00.000Z"
+  },
+  {
+    "id": "c7d8e9f0-1234-5678-9abc-def012345606",
+    "notebookId": "d4e8a2f1-3b7c-4d9e-a1b2-c3d4e5f67890",
+    "noteContext": "Préparation démo client",
+    "rawContent": "Démo lundi 10 mars 14h. Scénario : onboarding client PME, rapport automatique, export. Préparer compte sandbox avec données réalistes. Alexis fait la démo. Répétition vendredi 16h. Tester connexion en salle Rhône.",
+    "structuredContent": "# Préparation démo — 10 mars 2026\n\n## Logistique\n- **Date** : Lundi 10 mars à 14h00\n- **Salle** : Rhône *(tester connexion à l'avance)*\n- **Présentateur** : Alexis\n- **Répétition** : Vendredi 7 mars à 16h00\n\n## Scénario de démo\n1. Onboarding d'un client PME type\n2. Création d'un bloc-note et prise de notes en live\n3. Génération automatique du rapport de réunion\n4. Export des documents\n\n## Préparation technique\n- [ ] Créer compte sandbox avec données réalistes\n- [ ] Tester le parcours complet de bout en bout\n- [ ] Préparer fallback offline au cas où\n\n## Questions ouvertes\n- Quelle PME fictive utiliser comme cas d'usage ?",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["démo", "préparation", "client", "présentation"]
+    },
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "language": "fr",
+    "createdAt": "2026-03-07T10:15:00.000Z"
+  },
+  {
+    "id": "c7d8e9f0-1234-5678-9abc-def012345605",
+    "notebookId": "d4e8a2f1-3b7c-4d9e-a1b2-c3d4e5f67890",
+    "noteContext": "Point juridique",
+    "rawContent": "Appel avocat Maître Dupont. Clause NDA standard OK. Attention : propriété intellectuelle des intégrations développées spécifiquement doit rester chez nous. Revoir article 8.2. Délai de rétractation 30 jours prévu dans le contrat.",
+    "structuredContent": "# Point juridique — Contrat TechVentures\n\n## Avec Maître Dupont (avocat)\n\n### ✅ Points validés\n- **NDA** : Clause standard, acceptable en l'état\n- **Délai de rétractation** : 30 jours prévu au contrat *(conforme au droit européen)*\n\n### ⚠️ Point critique — Propriété intellectuelle\n- Les intégrations développées **spécifiquement pour TechVentures** doivent rester notre propriété\n- **Action requise** : Revoir et amender l'**article 8.2** avant signature\n- Risque si non corrigé : perte des droits sur les développements futurs\n\n## TODO\n- [ ] Maître Dupont rédige un amendement à l'article 8.2\n- [ ] Valider avec TechVentures leur accord sur la PI\n- [ ] Intégrer dans la version finale du contrat\n\n## Questions ouvertes\n- TechVentures acceptera-t-il l'amendement PI sans négociation ?",
+    "meta": {
+      "suggest_document": true,
+      "document_title": "Synthèse points juridiques — Contrat TechVentures",
+      "document_reason": "Formaliser les points de vigilance pour le service juridique",
+      "tags": ["juridique", "NDA", "contrat", "propriété-intellectuelle"]
+    },
+    "provider": "ollama",
+    "model": "mistral-small:22b",
+    "language": "fr",
+    "createdAt": "2026-03-05T15:00:00.000Z"
+  },
+  {
+    "id": "c7d8e9f0-1234-5678-9abc-def012345604",
+    "notebookId": "d4e8a2f1-3b7c-4d9e-a1b2-c3d4e5f67890",
+    "noteContext": "Négociation tarifaire",
+    "rawContent": "Proposition TechVentures : 18% commission sur ventes. Notre contre-proposition : 12% avec paliers volumes. Accord probable autour de 15%. Bonus si objectif dépasse 500k ARR. Revoir modèle financier avant prochaine réunion.",
+    "structuredContent": "# Négociation tarifaire — Commission partenariat\n\n## Positions actuelles\n\n| Partie | Commission proposée |\n|--------|--------------------|\n| TechVentures | 18% |\n| Notre position | 12% + paliers volumes |\n| **Zone d'accord estimée** | **~15%** |\n\n## Structure tarifaire envisagée\n- **0 – 200k ARR** : 12%\n- **200k – 500k ARR** : 14%\n- **+500k ARR** : 15% + bonus exceptionnel\n\n## Bonus de performance\n- Si ARR dépasse **500 000 €** : bonus à définir (proposition : +2% ponctuel)\n\n## TODO\n- [ ] Revoir le modèle financier avec le CFO avant la prochaine réunion\n- [ ] Simuler l'impact des paliers sur nos marges\n- [ ] Préparer 3 scénarios (pessimiste / réaliste / optimiste)\n\n## Décisions\n- Ne pas descendre en dessous de 12% de base",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["finance", "négociation", "commission", "ARR"]
+    },
+    "provider": "ollama",
+    "model": "qwen2.5:72b",
+    "language": "fr",
+    "createdAt": "2026-03-03T11:00:00.000Z"
+  },
+  {
+    "id": "c7d8e9f0-1234-5678-9abc-def012345603",
+    "notebookId": "d4e8a2f1-3b7c-4d9e-a1b2-c3d4e5f67890",
+    "noteContext": "Réunion technique",
+    "rawContent": "Revue API avec équipe TechVentures. Leur stack : Node.js + PostgreSQL. Compatible avec notre système. Besoin webhook pour sync en temps réel. Estimer 3-4 semaines de dev pour l'intégration complète. Point bloquant : auth OAuth2 à implémenter côté TechVentures.",
+    "structuredContent": "# Réunion technique — Revue API TechVentures\n\n## Stack technique TechVentures\n- **Backend** : Node.js\n- **Base de données** : PostgreSQL\n- **Compatibilité** : ✅ Compatible avec notre système\n\n## Besoins d'intégration\n- **Webhooks** requis pour synchronisation en temps réel\n- Estimation développement : **3 à 4 semaines** (intégration complète)\n\n## 🔴 Point bloquant\n- **Auth OAuth2** non encore implémentée côté TechVentures\n- Bloque le démarrage de l'intégration\n- Action : TechVentures doit fournir un délai de livraison\n\n## TODO\n- [ ] Envoyer la spécification webhook à l'équipe TechVentures\n- [ ] Relancer Thomas sur le planning OAuth2\n- [ ] Cadrer le plan de tests d'intégration\n\n## Questions ouvertes\n- Quel environnement de staging TechVentures met à disposition ?\n- Volume attendu d'appels webhooks (sizing) ?",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["technique", "API", "intégration", "OAuth2", "webhook"]
+    },
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "language": "fr",
+    "createdAt": "2026-02-28T14:00:00.000Z"
+  },
+  {
+    "id": "c7d8e9f0-1234-5678-9abc-def012345602",
+    "notebookId": "d4e8a2f1-3b7c-4d9e-a1b2-c3d4e5f67890",
+    "noteContext": "Analyse concurrentielle",
+    "rawContent": "Concurrents sur ce segment : SalesSync (US, 200k clients), NoteLink (FR, 50k clients). TechVentures travaille actuellement avec NoteLink mais insatisfaits des délais de support. Notre avantage : IA embarquée et support SLA 4h. Opportunité claire si on se positionne rapidement.",
+    "structuredContent": "# Analyse concurrentielle — Segment TechVentures\n\n## Concurrents identifiés\n\n| Concurrent | Origine | Volume clients | Statut |\n|------------|---------|---------------|--------|\n| SalesSync | 🇺🇸 US | 200 000 | Leader mondial |\n| NoteLink | 🇫🇷 FR | 50 000 | Partenaire actuel de TechVentures |\n\n## Situation actuelle\n- TechVentures est actuellement client **NoteLink**\n- **Insatisfaction principale** : délais de support trop longs\n\n## Nos avantages différenciants\n1. **IA embarquée** : structuration automatique des notes, génération de documents\n2. **SLA support 4h** vs délais non maîtrisés chez NoteLink\n3. **Solution française** : conformité RGPD, proximité culturelle\n\n## ⚡ Opportunité\n- Fenêtre d'opportunité claire si on se positionne **avant le prochain renouvellement NoteLink**\n- Estimer la date de renouvellement du contrat NoteLink de TechVentures\n\n## TODO\n- [ ] Chercher la date de fin de contrat NoteLink via Sophie\n- [ ] Préparer un comparatif fonctionnel vs NoteLink",
+    "meta": {
+      "suggest_document": true,
+      "document_title": "Analyse concurrentielle — Positionnement vs NoteLink & SalesSync",
+      "document_reason": "Document de référence pour l'équipe commerciale et le pitch TechVentures",
+      "tags": ["concurrence", "stratégie", "marché", "différenciation"]
+    },
+    "provider": "ollama",
+    "model": "mistral-small:22b",
+    "language": "fr",
+    "createdAt": "2026-02-24T09:30:00.000Z"
+  },
+  {
+    "id": "c7d8e9f0-1234-5678-9abc-def012345601",
+    "notebookId": "d4e8a2f1-3b7c-4d9e-a1b2-c3d4e5f67890",
+    "noteContext": "Premier contact",
+    "rawContent": "Appel découverte avec Sophie Marchand, VP Partnerships chez TechVentures. Intéressés par notre solution pour leurs 800 clients PME en Espagne et Portugal. Budget annuel estimé 400-600k€. Prochain RDV : 28 fev avec leur CTO. Envoyer deck produit avant le 22.",
+    "structuredContent": "# Premier contact — TechVentures\n\n## Interlocuteur\n- **Sophie Marchand** — VP Partnerships, TechVentures\n\n## Contexte de l'opportunité\n- TechVentures cherche une solution pour **800 clients PME** (Espagne + Portugal)\n- **Budget annuel estimé** : 400 000 – 600 000 €\n- Fort intérêt pour notre module IA et la gestion documentaire\n\n## Prochaines étapes\n- **28 février** : RDV avec le CTO de TechVentures\n- **Avant le 22 février** : Envoyer le deck produit à Sophie\n\n## TODO\n- [ ] Préparer et envoyer le deck produit (deadline : 22 fév)\n- [ ] Qualifier le budget exact lors du prochain RDV\n- [ ] Préparer questions techniques pour le CTO\n\n## Questions ouvertes\n- Quel est leur stack actuel ?\n- Sont-ils déjà équipés d'une solution concurrente ?",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["premier-contact", "découverte", "prospect", "PME"]
+    },
+    "provider": "ollama",
+    "model": "qwen2.5:72b",
+    "language": "fr",
+    "createdAt": "2026-02-18T09:00:00.000Z"
+  }
+]

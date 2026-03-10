@@ -1,0 +1,9 @@
+{
+  "id": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+  "title": "Cloud Migration — Scalr Platform",
+  "context": "Technical project: migrating Scalr's monolithic Node.js backend to a distributed microservices architecture on AWS. Team of 5 engineers. Target go-live: March 11, 2026. Key constraints: zero-downtime migration, 2.3TB PostgreSQL data, SOC2 compliance.",
+  "language": "en",
+  "createdAt": "2026-02-20T08:00:00.000Z",
+  "updatedAt": "2026-03-08T16:00:00.000Z",
+  "noteCount": 7
+}

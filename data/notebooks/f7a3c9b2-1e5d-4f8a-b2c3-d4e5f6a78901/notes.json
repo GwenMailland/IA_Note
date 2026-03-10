@@ -1,0 +1,121 @@
+[
+  {
+    "id": "d8e9f0a1-2345-6789-abcd-ef0123456707",
+    "notebookId": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+    "noteContext": "Go-Live Checklist",
+    "rawContent": "Go-live Monday 11 March 6am UTC. Checklist: DNS cutover, health checks passing on all 12 services, DB replication lag < 1s, rollback plan rehearsed. Oncall: Marcus (backend), Priya (infra). War room: #migration-golive Slack channel. Stakeholders notified.",
+    "structuredContent": "# Go-Live — Monday March 11, 2026 @ 06:00 UTC\n\n## Pre-Launch Checklist\n\n### Infrastructure\n- [ ] DNS cutover prepared and tested\n- [ ] Health checks passing on all **12 microservices**\n- [ ] DB replication lag confirmed < 1 second\n- [ ] Load balancer routing verified\n\n### Rollback Plan\n- [ ] Rollback procedure rehearsed (< 15 min target)\n- [ ] Feature flags configured for instant rollback\n- [ ] Old monolith kept warm for 48h post-cutover\n\n## On-Call Rotation\n| Role | Person | Contact |\n|------|--------|---------|\n| Backend | Marcus | Slack @marcus |\n| Infrastructure | Priya | PagerDuty |\n\n## Communication\n- **War room**: `#migration-golive` (Slack)\n- All stakeholders notified via email\n- Status page updates every 30min during window\n\n## ✅ Decisions\n- Go/No-Go call at **05:45 UTC** with CTO",
+    "meta": {
+      "suggest_document": true,
+      "document_title": "Go-Live Runbook — Scalr Cloud Migration",
+      "document_reason": "Operational reference for the migration window and team coordination",
+      "tags": ["go-live", "deployment", "checklist", "operations"]
+    },
+    "provider": "ollama",
+    "model": "qwen2.5:72b",
+    "language": "en",
+    "createdAt": "2026-03-08T16:00:00.000Z"
+  },
+  {
+    "id": "d8e9f0a1-2345-6789-abcd-ef0123456706",
+    "notebookId": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+    "noteContext": "Team Retrospective — Sprint 4",
+    "rawContent": "Went well: service mesh setup smoother than expected, Priya did great work on terraform modules. Needs improvement: too many context switches between migration and feature work. Action: dedicated migration days Mon/Tue. Blocker resolved: Redis cluster auth issue fixed by rotating certs.",
+    "structuredContent": "# Team Retrospective — Sprint 4\n\n## ✅ What Went Well\n- **Service mesh setup** completed ahead of schedule (Istio config cleaner than anticipated)\n- **Priya's Terraform modules** — reusable, well-documented, saved ~2 days of work\n- Zero regressions in auth-service after refactoring\n\n## 🔧 Needs Improvement\n- **Context switching** between migration tasks and ongoing feature requests is hurting focus\n  - Engineers are pulled into bug fixes mid-migration\n\n## 🔴 Blockers\n- ~~Redis cluster auth issue~~ **RESOLVED** — Fixed by rotating TLS certificates\n  - Root cause: expired cert not caught by monitoring (alert rule added)\n\n## Actions\n- [ ] Block **Monday + Tuesday** as dedicated migration days (no feature work)\n- [ ] PM to shield team from non-critical interruptions this week\n- [ ] Add Redis cert expiry alert to runbook\n\n## Metrics — Sprint 4\n- Services migrated: 4/12 ✅\n- Test coverage: 87% (target: 85%) ✅\n- Open migration PRs: 3",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["retro", "team", "process", "sprint"]
+    },
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "language": "en",
+    "createdAt": "2026-03-07T17:00:00.000Z"
+  },
+  {
+    "id": "d8e9f0a1-2345-6789-abcd-ef0123456705",
+    "notebookId": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+    "noteContext": "API Gateway Design Decision",
+    "rawContent": "Decision: use AWS API Gateway v2 over Kong. Reasons: managed service, native IAM auth, lower ops burden. Rate limiting: 1000 req/min per tenant. Custom domain: api.scalr.io. Versioning strategy: URL path /v1/ /v2/. Breaking changes require 90 day deprecation notice.",
+    "structuredContent": "# ADR-005 — API Gateway Selection\n\n## Decision\n**Chosen: AWS API Gateway v2** (over Kong, Nginx, Traefik)\n\n## Context\nNeeded an API gateway to handle external routing, auth, and rate limiting for the new microservices architecture.\n\n## Rationale\n\n| Criterion | AWS API GW v2 | Kong |\n|-----------|--------------|------|\n| Ops burden | Low (managed) | High (self-hosted) |\n| IAM auth | Native | Plugin required |\n| Cost | Pay-per-request | Fixed infra cost |\n| Learning curve | Low for team | Medium |\n\n## Configuration\n- **Rate limiting**: 1,000 req/min per tenant\n- **Custom domain**: `api.scalr.io`\n- **Versioning**: URL path strategy (`/v1/`, `/v2/`)\n- **Breaking change policy**: 90-day deprecation notice required\n\n## Consequences\n- Vendor lock-in to AWS (accepted — already AWS-native)\n- No custom plugins (acceptable for current needs)\n- Saves ~1 week of Kong setup and maintenance\n\n## Status: ✅ Approved — 2026-03-05",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["API", "AWS", "architecture", "decision", "ADR"]
+    },
+    "provider": "ollama",
+    "model": "qwen2.5:72b",
+    "language": "en",
+    "createdAt": "2026-03-05T11:00:00.000Z"
+  },
+  {
+    "id": "d8e9f0a1-2345-6789-abcd-ef0123456704",
+    "notebookId": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+    "noteContext": "Security Audit — Pre-Migration",
+    "rawContent": "Pentest by SecureOps: 3 findings. HIGH: exposed debug endpoint /admin/debug on staging (fixed). MEDIUM: JWT expiry too long 7 days reduced to 1h plus refresh token. LOW: verbose error messages leaking stack traces. All highs and mediums fixed before go-live. SOC2 Type II audit scheduled April.",
+    "structuredContent": "# Security Audit Report — Pre-Migration Pentest\n\n**Conducted by**: SecureOps Ltd\n**Date**: March 4, 2026\n**Scope**: All 12 microservices, API gateway, infrastructure\n\n## Findings Summary\n\n| Severity | Count | Status |\n|----------|-------|--------|\n| 🔴 HIGH | 1 | ✅ Fixed |\n| 🟡 MEDIUM | 1 | ✅ Fixed |\n| 🟢 LOW | 1 | Planned |\n\n## Detailed Findings\n\n### 🔴 HIGH — Debug endpoint exposed\n- **Endpoint**: `/admin/debug` accessible on staging environment\n- **Risk**: Full request/response logging, env variables visible\n- **Fix**: Endpoint removed, firewall rule added for staging\n- **Status**: ✅ Fixed (March 4)\n\n### 🟡 MEDIUM — JWT expiry too long\n- **Issue**: Access tokens valid for 7 days\n- **Risk**: Stolen token usable for extended period\n- **Fix**: Reduced to **1 hour** + added refresh token flow\n- **Status**: ✅ Fixed (March 5)\n\n### 🟢 LOW — Verbose error messages\n- **Issue**: Stack traces returned in production error responses\n- **Fix**: Generic error handler with correlation IDs only\n- **Status**: Scheduled for Sprint 5\n\n## Compliance\n- **SOC2 Type II** audit scheduled: **April 2026**\n- All HIGH/MEDIUM findings must be resolved before go-live ✅\n\n## Open Questions\n- Will LOW finding block SOC2 audit?",
+    "meta": {
+      "suggest_document": true,
+      "document_title": "Security Audit Report — Scalr Pre-Migration Findings",
+      "document_reason": "Required for SOC2 compliance documentation",
+      "tags": ["security", "pentest", "compliance", "SOC2", "JWT"]
+    },
+    "provider": "ollama",
+    "model": "mistral-small:22b",
+    "language": "en",
+    "createdAt": "2026-03-04T14:00:00.000Z"
+  },
+  {
+    "id": "d8e9f0a1-2345-6789-abcd-ef0123456703",
+    "notebookId": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+    "noteContext": "Database Migration Strategy",
+    "rawContent": "Strategy: blue-green migration. Phase 1: dual-write to old and new DB. Phase 2: verify consistency cutover reads. Phase 3: stop writes to old DB verify decommission. Data volume: 2.3TB PostgreSQL. Estimated migration window: 4 hours. Tooling: pglogical for replication. Risk: large blob storage 180GB S3.",
+    "structuredContent": "# Database Migration Strategy\n\n## Approach: Blue-Green Migration\n\nChosen to guarantee **zero-downtime** and immediate rollback capability.\n\n## Migration Phases\n\n### Phase 1 — Dual Write\n- Both old and new databases receive all writes simultaneously\n- Duration: ~2 weeks of parallel operation\n- Goal: build replication lag baseline\n\n### Phase 2 — Read Cutover\n- Switch all **read traffic** to new DB\n- Monitor for consistency issues (automated diff checks every 15min)\n- Old DB still receiving writes as fallback\n\n### Phase 3 — Write Cutover & Decommission\n- Stop writes to old DB\n- 48h verification period\n- Decommission old DB instance\n\n## Technical Details\n| Parameter | Value |\n|-----------|-------|\n| Data volume | 2.3 TB PostgreSQL |\n| Replication tool | pglogical |\n| Migration window | ~4 hours (Phase 3) |\n| Blob storage | 180 GB (S3, separate migration) |\n\n## Risks & Mitigations\n- **S3 blob storage (180GB)**: Separate migration plan required — not covered by pglogical\n- **Replication lag spikes**: Alert if lag > 5s, pause traffic if > 30s\n- **Schema drift**: All migrations frozen 2 weeks before go-live\n\n## TODO\n- [ ] S3 blob migration plan (owner: Marcus)\n- [ ] Load test dual-write performance impact\n- [ ] Document rollback procedure for Phase 3",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["database", "migration", "postgresql", "strategy", "blue-green"]
+    },
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "language": "en",
+    "createdAt": "2026-03-01T10:00:00.000Z"
+  },
+  {
+    "id": "d8e9f0a1-2345-6789-abcd-ef0123456702",
+    "notebookId": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+    "noteContext": "Performance Baseline Audit",
+    "rawContent": "Current monolith: p95 latency 340ms p99 890ms. Target post-migration: p95 under 100ms. Bottlenecks: N+1 queries on user dashboard accounts for 60% of DB load, sync report generation blocking request thread. Memory 4.2GB average RSS on prod pods. Load test max 800 concurrent users before degradation.",
+    "structuredContent": "# Performance Baseline — Scalr Monolith\n\n## Current Metrics (Production)\n\n| Metric | Current | Target (post-migration) |\n|--------|---------|------------------------|\n| p95 latency | **340ms** | < 100ms |\n| p99 latency | **890ms** | < 300ms |\n| Max concurrent users | **800** | 5,000+ |\n| Memory (avg RSS) | **4.2 GB** | < 512 MB/service |\n\n## Bottlenecks Identified\n\n### 🔴 Critical — N+1 Queries (User Dashboard)\n- Accounts for **60% of total DB load**\n- Each dashboard load triggers 40–80 individual queries\n- **Fix**: Implement DataLoader + query batching in user-service\n\n### 🟡 High — Synchronous Report Generation\n- Report generation **blocks the request thread** (up to 8 seconds)\n- **Fix**: Move to async job queue (SQS + worker), return job ID with polling\n\n### 🟢 Medium — Memory Bloat\n- 4.2 GB RSS from caching everything in-process\n- **Fix**: Move caches to Redis (already planned)\n\n## Load Test Results\n- Degradation starts at **800 concurrent users**\n- Error rate > 1% at 950 users\n- Complete failure at 1,200 users\n\n## Open Questions\n- Will splitting into 12 services eliminate the N+1 problem or just move it?",
+    "meta": {
+      "suggest_document": false,
+      "document_title": null,
+      "document_reason": null,
+      "tags": ["performance", "baseline", "metrics", "optimization", "profiling"]
+    },
+    "provider": "ollama",
+    "model": "qwen2.5:72b",
+    "language": "en",
+    "createdAt": "2026-02-25T09:00:00.000Z"
+  },
+  {
+    "id": "d8e9f0a1-2345-6789-abcd-ef0123456701",
+    "notebookId": "f7a3c9b2-1e5d-4f8a-b2c3-d4e5f6a78901",
+    "noteContext": "Architecture Decision Record — Microservices Split",
+    "rawContent": "Splitting monolith into: auth-service, user-service, workspace-service, reporting-service, notification-service, billing-service. Communication: gRPC for internal REST for external. Event bus: AWS EventBridge. Each service owns its DB schema. Team assignment per service. Target: fully split by March 15.",
+    "structuredContent": "# ADR-001 — Microservices Architecture\n\n## Context\nThe Scalr monolith has reached scalability limits. p99 latency at 890ms, team velocity declining due to deployment coupling, and infrastructure costs scaling linearly with users.\n\n## Decision\nSplit into **6 bounded microservices**, each owning its data and deployed independently.\n\n## Services\n\n| Service | Responsibility | Owner |\n|---------|---------------|-------|\n| auth-service | Authentication, JWT, OAuth2 | Marcus |\n| user-service | User profiles, permissions | Sara |\n| workspace-service | Notebooks, notes, documents | Dev |\n| reporting-service | Async report generation | Priya |\n| notification-service | Email, webhooks, push | Alex |\n| billing-service | Stripe integration, invoices | Marcus |\n\n## Communication\n- **Internal (service-to-service)**: gRPC (low latency, typed contracts)\n- **External (client-to-API)**: REST via AWS API Gateway\n- **Async events**: AWS EventBridge (audit logs, notifications, billing events)\n\n## Data Ownership\n- Each service owns its own DB schema\n- No direct cross-service DB queries allowed\n- Cross-service data via API or event stream only\n\n## Target Timeline\n- All 6 services split and deployed: **March 15, 2026**\n- Full traffic cutover: **March 11, 2026** *(go-live)*\n\n## Consequences\n- ✅ Independent deployability per service\n- ✅ Horizontal scaling per service\n- ⚠️ Increased operational complexity (12 deployables)\n- ⚠️ Distributed tracing required (OpenTelemetry planned)\n\n## Status: ✅ Approved — 2026-02-20",
+    "meta": {
+      "suggest_document": true,
+      "document_title": "Architecture Decision Record — Microservices Migration",
+      "document_reason": "Formal ADR document for engineering wiki and future team reference",
+      "tags": ["architecture", "microservices", "ADR", "design", "gRPC"]
+    },
+    "provider": "ollama",
+    "model": "mistral-small:22b",
+    "language": "en",
+    "createdAt": "2026-02-20T08:00:00.000Z"
+  }
+]
