@@ -24,10 +24,12 @@ export default function SettingsPage() {
   const [claudeApiKey, setClaudeApiKey] = useState('');
   const [groqTest, setGroqTest] = useState('');
   const [claudeTest, setClaudeTest] = useState('');
+  const [exportDir, setExportDir] = useState('~/Downloads');
+  const [exportDirResolved, setExportDirResolved] = useState('');
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { loadConfig(); checkOllama(); }, []);
+  useEffect(() => { loadConfig(); checkOllama(); loadExportDir(); }, []);
 
   async function loadConfig() {
     try {
@@ -36,7 +38,16 @@ export default function SettingsPage() {
       setConfig(cfg);
       setGroqApiKey(cfg.ai?.groq?.apiKey || '');
       setClaudeApiKey(cfg.ai?.claude?.apiKey || '');
+      if (cfg.exportDir) setExportDir(cfg.exportDir);
     } catch (e) { console.error(e); }
+  }
+
+  async function loadExportDir() {
+    try {
+      const r = await fetch('http://localhost:3001/api/export/dir');
+      const d = await r.json();
+      setExportDirResolved(d.resolved || '');
+    } catch (e) {}
   }
 
   async function checkOllama() {
@@ -68,6 +79,7 @@ export default function SettingsPage() {
     try {
       const payload = {
         ...config,
+        exportDir,
         ai: {
           ...config.ai,
           groq: { ...config.ai.groq, apiKey: groqApiKey },
@@ -265,6 +277,24 @@ export default function SettingsPage() {
             {CLAUDE_MODELS.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
         </div>
+      </section>
+
+      {/* Export destination */}
+      <section className="card p-5 mb-6">
+        <h2 className="font-semibold mb-1" style={{ color: 'var(--nf-text)' }}>{t('settings.exportDir.title')}</h2>
+        <p className="text-xs mb-3" style={{ color: 'var(--nf-text-muted)' }}>{t('settings.exportDir.description')}</p>
+        <input
+          type="text"
+          value={exportDir}
+          onChange={e => setExportDir(e.target.value)}
+          placeholder="~/Downloads"
+          className="input text-sm w-full font-mono"
+        />
+        {exportDirResolved && (
+          <p className="text-xs mt-1.5 font-mono" style={{ color: 'var(--nf-text-faint)' }}>
+            → {exportDirResolved}
+          </p>
+        )}
       </section>
 
       <button

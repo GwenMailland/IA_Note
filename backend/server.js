@@ -18,6 +18,7 @@ app.use('/api/notebooks', require('./routes/notebooks'));
 app.use('/api/notebooks/:notebookId/notes', require('./routes/notes'));
 app.use('/api/notebooks/:notebookId/documents', require('./routes/documents'));
 app.use('/api/notebooks/:notebookId/chat', require('./routes/chat'));
+app.use('/api/export', require('./routes/export'));
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 

@@ -83,8 +83,8 @@
     "noDocuments": "Aucun document. Générez-en un depuis une note ou via le bouton ci-dessous.",
     "newDocument": "Nouveau document",
     "lastUpdated": "Mis à jour le",
-    "downloadMd": "Télécharger .md",
-    "exportZip": "Exporter tout (.zip)"
+    "saveToDir": "Enregistrer",
+    "saveAll": "Enregistrer tout"
   },
   "settings": {
     "title": "Paramètres",
@@ -121,6 +121,10 @@
       "testing": "Test…",
       "testOk": "Clé valide !",
       "testFail": "Clé invalide"
+    },
+    "exportDir": {
+      "title": "Dossier d'export",
+      "description": "Les documents enregistrés depuis l'onglet Documents seront écrits dans ce dossier. Utilisez ~ pour votre répertoire personnel."
     },
     "save": "Sauvegarder",
     "saved": "Sauvegardé !"

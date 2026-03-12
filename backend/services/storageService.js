@@ -7,6 +7,7 @@ const NOTEBOOKS_DIR = path.join(DATA_DIR, 'notebooks');
 
 const DEFAULT_CONFIG = {
   language: 'fr',
+  exportDir: '~/Downloads',
   ai: {
     provider: 'ollama',
     ollama: { model: 'qwen2.5:72b' },
